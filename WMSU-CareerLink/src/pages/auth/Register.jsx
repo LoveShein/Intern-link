@@ -1,6 +1,4 @@
-
 import { useState } from 'react';
-
 import Button from '../../components/Button.jsx';
 
 export default function Register({ onBack, onRegister }) {
@@ -10,14 +8,13 @@ export default function Register({ onBack, onRegister }) {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
 
     if (password.length < 4) {
-      setError(
-        'Use at least 4 characters for this demo password.'
-      );
+      setError('Use at least 4 characters for your password.');
       return;
     }
 
@@ -26,7 +23,34 @@ export default function Register({ onBack, onRegister }) {
       return;
     }
 
-    onRegister({ name, email, role });
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || 'Registration failed.');
+        setLoading(false);
+        return;
+      }
+
+      if (data.token) {
+        localStorage.setItem('careerlink.token', data.token);
+      }
+
+      onRegister(data.user);
+    } catch (err) {
+      setError('Server connection failed.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -50,7 +74,7 @@ export default function Register({ onBack, onRegister }) {
         <h2>Create your account</h2>
 
         <p className="muted">
-          This creates a local demo session only.
+          Register to access student internships and employer features.
         </p>
 
         <label className="field-label">
@@ -114,8 +138,9 @@ export default function Register({ onBack, onRegister }) {
         <Button
           type="submit"
           className="full-width"
+          disabled={loading}
         >
-          Create demo account
+          {loading ? 'Creating account...' : 'Create account'}
         </Button>
       </form>
     </main>
