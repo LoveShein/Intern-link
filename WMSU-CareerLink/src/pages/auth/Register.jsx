@@ -12,6 +12,7 @@ export default function Register({ onBack, onRegister }) {
 
   async function submit(e) {
     e.preventDefault();
+    setError('');
 
     if (password.length < 4) {
       setError('Use at least 4 characters for your password.');
@@ -23,46 +24,12 @@ export default function Register({ onBack, onRegister }) {
       return;
     }
 
-<<<<<<< HEAD
     onRegister({ name, email, password, role });
-=======
-    setError('');
-    setLoading(true);
-
-    try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || 'Registration failed.');
-        setLoading(false);
-        return;
-      }
-
-      if (data.token) {
-        localStorage.setItem('careerlink.token', data.token);
-      }
-
-      onRegister(data.user);
-    } catch (err) {
-      setError('Server connection failed.');
-    } finally {
-      setLoading(false);
-    }
->>>>>>> 5a3402fbd2980fde952e523766db463daf664443
   }
 
   return (
     <main className="auth-simple">
-      <form
-        className="auth-card wide"
-        onSubmit={submit}
-      >
+      <form className="auth-card wide" onSubmit={submit}>
         <button
           type="button"
           className="text-btn"
@@ -71,14 +38,12 @@ export default function Register({ onBack, onRegister }) {
           ← Back to sign in
         </button>
 
-        <span className="eyebrow red">
-          JOIN CAREERLINK
-        </span>
+        <span className="eyebrow red">JOIN CAREERLINK</span>
 
         <h2>Create your account</h2>
 
         <p className="muted">
-          Register to access student internships and employer features.
+          Register for your WMSU CareerLink account.
         </p>
 
         <label className="field-label">
@@ -87,8 +52,8 @@ export default function Register({ onBack, onRegister }) {
             value={role}
             onChange={(e) => setRole(e.target.value)}
           >
-            <option>Student</option>
-            <option>Employer</option>
+            <option value="Student">Student</option>
+            <option value="Employer">Employer</option>
           </select>
         </label>
 
@@ -134,9 +99,7 @@ export default function Register({ onBack, onRegister }) {
         </div>
 
         {error && (
-          <p className="form-error">
-            {error}
-          </p>
+          <p className="form-error">{error}</p>
         )}
 
         <Button

@@ -55,6 +55,13 @@
   ],
   "users": [
     {
+      "id": 1793021947514,
+      "name": "jozane",
+      "email": "novie12@gmail.com",
+      "role": "Student",
+      "status": "Active"
+    },
+    {
       "id": "admin-1",
       "name": "WMSU Administrator",
       "email": "admin@wmsu.edu.ph",

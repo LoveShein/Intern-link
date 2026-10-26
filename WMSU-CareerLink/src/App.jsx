@@ -811,34 +811,32 @@ function ApplicationsAdmin({ applications, onStatus }) {
     </>
   );
 }
-<<<<<<< HEAD
 
-// --------------------------------------------------
-// API REQUESTS
-// --------------------------------------------------
+ // --------------------------------------------------
+ // API REQUESTS
+ // --------------------------------------------------
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
-async function apiRequest(path, options = {}) {
-  const response = await fetch(`${API_URL}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
+ async function apiRequest(path, options = {}) {
+   const response = await fetch(`${API_URL}${path}`, {
+     headers: {
+       'Content-Type': 'application/json',
+       ...(options.headers || {}),
+     },
+     ...options,
+   });
 
-  const isJson = response.headers
-    .get('content-type')
-    ?.includes('application/json');
+   const isJson = response.headers
+     .get('content-type')
+     ?.includes('application/json');
 
-  const payload = isJson ? await response.json() : null;
+   const payload = isJson ? await response.json() : null;
 
-  if (!response.ok) {
-    throw new Error(payload?.message || 'Request failed.');
-  }
+   if (!response.ok) {
+     throw new Error(payload?.message || 'Request failed.');
+   }
 
-  return payload;
-}
-=======
->>>>>>> 5a3402fbd2980fde952e523766db463daf664443
+   return payload;
+ }
+

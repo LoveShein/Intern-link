@@ -29,47 +29,11 @@ export default function Login({
     }
 
     setError('');
-    setLoading(true);
-
-<<<<<<< HEAD
     onLogin({
-      name:
-        role === 'Student'
-          ? 'Amina Santos'
-          : role === 'Employer'
-            ? 'Career Office Partner'
-            : 'System Administrator',
       email,
       password,
       role,
     });
-=======
-    try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || 'Login failed.');
-        setLoading(false);
-        return;
-      }
-
-      if (data.token) {
-        localStorage.setItem('careerlink.token', data.token);
-      }
-
-      onLogin(data.user);
-    } catch (err) {
-      setError('Unable to reach the server. Please check backend connection.');
-    } finally {
-      setLoading(false);
-    }
->>>>>>> 5a3402fbd2980fde952e523766db463daf664443
   }
 
   return (
