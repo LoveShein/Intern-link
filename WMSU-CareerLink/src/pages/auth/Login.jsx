@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 
 import {
@@ -41,6 +40,7 @@ export default function Login({
             ? 'Career Office Partner'
             : 'System Administrator',
       email,
+      password,
       role,
     });
   }

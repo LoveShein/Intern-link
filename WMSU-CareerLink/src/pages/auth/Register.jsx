@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 
 import Button from '../../components/Button.jsx';
@@ -26,7 +25,7 @@ export default function Register({ onBack, onRegister }) {
       return;
     }
 
-    onRegister({ name, email, role });
+    onRegister({ name, email, password, role });
   }
 
   return (

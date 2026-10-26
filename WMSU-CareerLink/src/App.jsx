@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { ChevronRight, Home } from 'lucide-react';
 
@@ -131,27 +130,62 @@ export default function App() {
     setTimeout(() => setToast(''), 2800);
   }
 
-  function login(nextUser) {
-    setUser(nextUser);
-    setAuthPage('login');
-    setPage('dashboard');
+  async function login(nextUser) {
+    try {
+      const result = await apiRequest('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: nextUser.email,
+          password: nextUser.password || '',
+          role: nextUser.role,
+        }),
+      });
 
-    notify(`Welcome to the ${nextUser.role} demo portal.`);
+      const signedInUser = {
+        ...result.user,
+        password: undefined,
+      };
+
+      setUser(signedInUser);
+      setAuthPage('login');
+      setPage('dashboard');
+      notify(`Welcome to the ${signedInUser.role} portal.`);
+    } catch (error) {
+      notify(error.message || 'Login failed.');
+    }
   }
 
-  function register(nextUser) {
-    setUsers((previousUsers) => [
-      ...previousUsers,
-      {
-        id: Date.now(),
-        ...nextUser,
-        status:
-          nextUser.role === 'Employer' ? 'Pending' : 'Active',
-      },
-    ]);
+  async function register(nextUser) {
+    try {
+      const result = await apiRequest('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: nextUser.name,
+          email: nextUser.email,
+          role: nextUser.role,
+          password: nextUser.password || '',
+        }),
+      });
 
-    login(nextUser);
-    notify('Demo account created.');
+      const signedInUser = {
+        ...result.user,
+        password: undefined,
+      };
+
+      setUsers((previousUsers) => [
+        ...previousUsers.filter(
+          (existingUser) => existingUser.email !== signedInUser.email
+        ),
+        signedInUser,
+      ]);
+
+      setUser(signedInUser);
+      setAuthPage('login');
+      setPage('dashboard');
+      notify('Account created successfully.');
+    } catch (error) {
+      notify(error.message || 'Account creation failed.');
+    }
   }
 
   function logout() {
@@ -834,4 +868,32 @@ function ApplicationsAdmin({ applications, onStatus }) {
       </section>
     </>
   );
+}
+
+// --------------------------------------------------
+// API REQUESTS
+// --------------------------------------------------
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
+async function apiRequest(path, options = {}) {
+  const response = await fetch(`${API_URL}${path}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    },
+    ...options,
+  });
+
+  const isJson = response.headers
+    .get('content-type')
+    ?.includes('application/json');
+
+  const payload = isJson ? await response.json() : null;
+
+  if (!response.ok) {
+    throw new Error(payload?.message || 'Request failed.');
+  }
+
+  return payload;
 }
