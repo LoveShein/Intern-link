@@ -228,10 +228,6 @@ p {
     margin:6px 0 0
 }
 
-/* ==========================================
-   WMSU CAREERLINK - UNIVERSITY LOGIN DESIGN
-========================================== */
-
 .wmsu-login-page {
   position: relative;
   display: flex;
@@ -328,8 +324,6 @@ p {
   letter-spacing: 1px;
 }
 
-/* MAIN LAYOUT */
-
 .wmsu-login-main {
   position: relative;
   z-index: 1;
@@ -344,8 +338,6 @@ p {
   padding: 48px 0;
   box-sizing: border-box;
 }
-
-/* WELCOME CONTENT */
 
 .wmsu-welcome {
   max-width: 570px;
@@ -410,8 +402,6 @@ p {
   border-radius: 11px;
 }
 
-/* LOGIN CARD */
-
 .wmsu-login-card {
   width: 100%;
   box-sizing: border-box;
@@ -461,8 +451,6 @@ p {
   line-height: 1.7;
 }
 
-/* INPUT FIELDS */
-
 .wmsu-login-form {
   display: grid;
   gap: 19px;
@@ -502,8 +490,6 @@ p {
 .wmsu-input::placeholder {
   color: #a0a8b5;
 }
-
-/* PASSWORD */
 
 .wmsu-password-label {
   display: flex;
@@ -553,8 +539,6 @@ p {
 .wmsu-eye-button:hover {
   color: #a9273d;
 }
-
-/* SIGN-IN BUTTON */
 
 .wmsu-login-submit {
   display: flex;
@@ -625,8 +609,6 @@ p {
   text-decoration: underline;
 }
 
-/* DEMO NOTICE */
-
 .wmsu-demo-notice {
   display: flex;
   align-items: flex-start;
@@ -656,8 +638,6 @@ p {
   font-size: 11px;
 }
 
-/* FOOTER */
-
 .wmsu-login-footer {
   position: relative;
   z-index: 1;
@@ -674,8 +654,6 @@ p {
   font-weight: 800;
   letter-spacing: 1px;
 }
-
-/* RESPONSIVE */
 
 @media (max-width: 900px) {
   .wmsu-login-page {
