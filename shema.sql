@@ -1,8 +1,3 @@
--- ==========================================
--- WMSU CareerLink Database Schema (PostgreSQL)
--- ==========================================
-
--- 1. ENUM TYPES CREATION
 CREATE TYPE user_role AS ENUM ('Student', 'Employer', 'Admin');
 CREATE TYPE user_status AS ENUM ('Active', 'Pending', 'Rejected');
 CREATE TYPE year_level_enum AS ENUM ('1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year');
@@ -10,15 +5,11 @@ CREATE TYPE job_type_enum AS ENUM ('Internship', 'OJT');
 CREATE TYPE job_status AS ENUM ('Pending', 'Published', 'Rejected');
 CREATE TYPE application_status AS ENUM ('Submitted', 'Under Review', 'Shortlisted', 'Accepted', 'Rejected');
 
--- 2. TABLE CREATION
-
--- COURSES Table
 CREATE TABLE courses (
     course_id SERIAL PRIMARY KEY,
     course_name VARCHAR(100) NOT NULL UNIQUE
 );
 
--- USERS Table
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     full_name VARCHAR(120) NOT NULL,
@@ -29,7 +20,6 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- COMPANIES Table
 CREATE TABLE companies (
     company_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
@@ -43,7 +33,6 @@ CREATE TABLE companies (
     CONSTRAINT fk_companies_reviewed_by FOREIGN KEY (reviewed_by) REFERENCES users(user_id) ON DELETE SET NULL
 );
 
--- STUDENT_PROFILES Table
 CREATE TABLE student_profiles (
     student_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
@@ -56,7 +45,6 @@ CREATE TABLE student_profiles (
     CONSTRAINT fk_student_course FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE RESTRICT
 );
 
--- JOB_POSTINGS Table
 CREATE TABLE job_postings (
     job_id SERIAL PRIMARY KEY,
     company_id INT NOT NULL,
@@ -74,7 +62,6 @@ CREATE TABLE job_postings (
     CONSTRAINT fk_jobs_course FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE RESTRICT
 );
 
--- APPLICATIONS Table
 CREATE TABLE applications (
     application_id SERIAL PRIMARY KEY,
     job_id INT NOT NULL,
@@ -87,7 +74,6 @@ CREATE TABLE applications (
     CONSTRAINT fk_applications_student FOREIGN KEY (student_id) REFERENCES student_profiles(student_id) ON DELETE CASCADE
 );
 
--- SAVED_OPPORTUNITIES Table
 CREATE TABLE saved_opportunities (
     student_id INT NOT NULL,
     job_id INT NOT NULL,
@@ -97,7 +83,6 @@ CREATE TABLE saved_opportunities (
     CONSTRAINT fk_saved_job FOREIGN KEY (job_id) REFERENCES job_postings(job_id) ON DELETE CASCADE
 );
 
--- ANNOUNCEMENTS Table
 CREATE TABLE announcements (
     announcement_id SERIAL PRIMARY KEY,
     posted_by INT NOT NULL,
@@ -107,7 +92,6 @@ CREATE TABLE announcements (
     CONSTRAINT fk_announcements_admin FOREIGN KEY (posted_by) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- NOTIFICATIONS Table
 CREATE TABLE notifications (
     notification_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
