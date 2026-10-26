@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import {
   ArrowRight,
   BriefcaseBusiness,
@@ -15,23 +14,24 @@ export default function Login({
   onForgot,
 }) {
   const [role, setRole] = useState('Student');
-  const [email, setEmail] = useState('student@wmsu.edu.ph');
-  const [password, setPassword] = useState('demo123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
 
     if (!email.includes('@') || password.length < 4) {
-      setError(
-        'Enter a valid email and a password with at least 4 characters.'
-      );
+      setError('Enter a valid email and a password with at least 4 characters.');
       return;
     }
 
     setError('');
+    setLoading(true);
 
+<<<<<<< HEAD
     onLogin({
       name:
         role === 'Student'
@@ -43,6 +43,33 @@ export default function Login({
       password,
       role,
     });
+=======
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, role }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || 'Login failed.');
+        setLoading(false);
+        return;
+      }
+
+      if (data.token) {
+        localStorage.setItem('careerlink.token', data.token);
+      }
+
+      onLogin(data.user);
+    } catch (err) {
+      setError('Unable to reach the server. Please check backend connection.');
+    } finally {
+      setLoading(false);
+    }
+>>>>>>> 5a3402fbd2980fde952e523766db463daf664443
   }
 
   return (
@@ -53,9 +80,10 @@ export default function Login({
       <header className="wmsu-login-header">
         <div className="wmsu-header-brand">
           <img
-            src="WMSU-CareerLink/public/wmsu-logo.png"
+            src="wmsu-logo.png"
             alt="WMSU logo"
-            className="wmsu-logo"/>
+            className="wmsu-logo"
+          />
 
           <div>
             <strong>WMSU CareerLink</strong>
@@ -210,8 +238,9 @@ export default function Login({
             <button
               type="submit"
               className="wmsu-login-submit"
+              disabled={loading}
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
               <ArrowRight size={18} />
             </button>
           </form>
@@ -231,10 +260,9 @@ export default function Login({
             <ShieldCheck size={18} />
 
             <p>
-              <strong>Prototype notice</strong>
+              <strong>Security Notice</strong>
               <br />
-              This demo simulates sign-in and does not verify
-              real accounts.
+              Connected to WMSU CareerLink Express API server.
             </p>
           </div>
         </div>

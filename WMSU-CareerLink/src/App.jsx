@@ -39,10 +39,6 @@ import {
   initialNotifications,
 } from './data/sampleData.js';
 
-// --------------------------------------------------
-// LOCAL STORAGE
-// --------------------------------------------------
-
 const load = (key, fallback) => {
   try {
     const value = localStorage.getItem(key);
@@ -51,10 +47,6 @@ const load = (key, fallback) => {
     return fallback;
   }
 };
-
-// --------------------------------------------------
-// MAIN APPLICATION
-// --------------------------------------------------
 
 export default function App() {
   // Authentication and navigation
@@ -65,7 +57,6 @@ export default function App() {
   const [authPage, setAuthPage] = useState('login');
   const [page, setPage] = useState('dashboard');
 
-  // Application data
   const [jobs, setJobs] = useState(() =>
     load('careerlink.jobs', initialJobs)
   );
@@ -86,17 +77,12 @@ export default function App() {
     load('careerlink.notifications', initialNotifications)
   );
 
-  // Interface state
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [jobDetails, setJobDetails] = useState(null);
   const [applyJob, setApplyJob] = useState(null);
   const [applyNote, setApplyNote] = useState('');
   const [toast, setToast] = useState('');
-
-  // ------------------------------------------------
-  // SAVE DATA TO LOCAL STORAGE
-  // ------------------------------------------------
 
   useEffect(() => {
     const data = {
@@ -120,10 +106,6 @@ export default function App() {
       }
     });
   }, [user, jobs, users, applications, saved, notifications]);
-
-  // ------------------------------------------------
-  // NOTIFICATIONS AND AUTHENTICATION
-  // ------------------------------------------------
 
   function notify(message) {
     setToast(message);
@@ -201,10 +183,6 @@ export default function App() {
     setNotifOpen(false);
   }
 
-  // ------------------------------------------------
-  // PROFILE MANAGEMENT
-  // ------------------------------------------------
-
   function saveProfile(nextUser) {
     setUser(nextUser);
 
@@ -218,10 +196,6 @@ export default function App() {
 
     notify('Changes saved in this browser.');
   }
-
-  // ------------------------------------------------
-  // SAVED OPPORTUNITIES
-  // ------------------------------------------------
 
   function toggleSaved(id) {
     const isSaved = saved.includes(id);
@@ -238,10 +212,6 @@ export default function App() {
         : 'Opportunity saved.'
     );
   }
-
-  // ------------------------------------------------
-  // APPLICATION MANAGEMENT
-  // ------------------------------------------------
 
   function submitApplication(job) {
     const alreadyApplied = applications.some(
@@ -290,10 +260,6 @@ export default function App() {
     notify(`Application status updated to ${status}.`);
   }
 
-  // ------------------------------------------------
-  // USER AND JOB MANAGEMENT
-  // ------------------------------------------------
-
   function updateUser(id, status) {
     setUsers((previousUsers) =>
       previousUsers.map((existingUser) =>
@@ -329,10 +295,6 @@ export default function App() {
     notify('Posting removed from demo data.');
   }
 
-  // ------------------------------------------------
-  // NOTIFICATION MANAGEMENT
-  // ------------------------------------------------
-
   function readNotification(id) {
     setNotifications((previousNotifications) =>
       previousNotifications.map((notification) =>
@@ -342,10 +304,6 @@ export default function App() {
       )
     );
   }
-
-  // ------------------------------------------------
-  // AUTHENTICATION PAGES
-  // ------------------------------------------------
 
   if (!user) {
     if (authPage === 'register') {
@@ -373,10 +331,6 @@ export default function App() {
       />
     );
   }
-
-  // ------------------------------------------------
-  // ROLE-BASED PORTAL ROUTING
-  // ------------------------------------------------
 
   const role =
     user.role === 'Admin'
@@ -588,10 +542,6 @@ export default function App() {
     }
   }
 
-  // ------------------------------------------------
-  // MAIN APPLICATION LAYOUT
-  // ------------------------------------------------
-
   return (
     <div className="app-shell">
       <Navbar
@@ -772,10 +722,6 @@ export default function App() {
   );
 }
 
-// --------------------------------------------------
-// PAGE LABELS
-// --------------------------------------------------
-
 function pageLabel(key) {
   const labels = {
     dashboard: 'Dashboard',
@@ -798,10 +744,6 @@ function pageLabel(key) {
 
   return labels[key] || key;
 }
-
-// --------------------------------------------------
-// ADMIN APPLICATION RECORDS
-// --------------------------------------------------
 
 function ApplicationsAdmin({ applications, onStatus }) {
   return (
@@ -869,6 +811,7 @@ function ApplicationsAdmin({ applications, onStatus }) {
     </>
   );
 }
+<<<<<<< HEAD
 
 // --------------------------------------------------
 // API REQUESTS
@@ -897,3 +840,5 @@ async function apiRequest(path, options = {}) {
 
   return payload;
 }
+=======
+>>>>>>> 5a3402fbd2980fde952e523766db463daf664443
