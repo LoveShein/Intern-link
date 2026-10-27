@@ -324,3 +324,108 @@ app.use((_req, res) => {
 app.listen(PORT, () => {
   console.log(`WMSU CareerLink Multi-Table PostgreSQL backend running on http://localhost:${PORT}`);
 });
+
+// ==========================================
+// ADMIN & ANNOUNCEMENTS APIs
+// ==========================================
+
+// Get Announcements
+app.get('/api/announcements', async (_req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM announcements ORDER BY id DESC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('FETCH ANNOUNCEMENTS ERROR:', err);
+    res.status(500).json({ message: 'Database error fetching announcements.' });
+  }
+});
+
+// Create Announcement
+app.post('/api/announcements', async (req, res) => {
+  const { title, message } = req.body;
+  if (!title || !message) {
+    return res.status(400).json({ message: 'Title and message are required.' });
+  }
+  try {
+    const query = `
+      INSERT INTO announcements (title, message, date)
+      VALUES ($1, $2, CURRENT_DATE)
+      RETURNING *;
+    `;
+    const result = await pool.query(query, [title, message]);
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('CREATE ANNOUNCEMENT ERROR:', err);
+    res.status(500).json({ message: 'Database error creating announcement.' });
+  }
+});
+
+// Delete Announcement
+app.delete('/api/announcements/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM announcements WHERE id = $1', [id]);
+    res.json({ success: true, message: 'Announcement deleted.' });
+  } catch (err) {
+    console.error('DELETE ANNOUNCEMENT ERROR:', err);
+    res.status(500).json({ message: 'Database error deleting announcement.' });
+  }
+});
+
+// Categories APIs
+app.get('/api/categories', async (_req, res) => {
+  try {
+    const result = await pool.query('SELECT name FROM categories ORDER BY id ASC');
+    res.json(result.rows.map(row => row.name));
+  } catch (err) {
+    console.error('FETCH CATEGORIES ERROR:', err);
+    res.status(500).json({ message: 'Database error fetching categories.' });
+  }
+});
+
+app.post('/api/categories', async (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ message: 'Category name required.' });
+  try {
+    const result = await pool.query(
+      'INSERT INTO categories (name) VALUES ($1) ON CONFLICT (name) DO NOTHING RETURNING name;',
+      [name.trim()]
+    );
+    res.status(201).json({ name: name.trim() });
+  } catch (err) {
+    console.error('ADD CATEGORY ERROR:', err);
+    res.status(500).json({ message: 'Database error adding category.' });
+  }
+});
+
+app.delete('/api/categories/:name', async (req, res) => {
+  const { name } = req.params;
+  try {
+    await pool.query('DELETE FROM categories WHERE name = $1', [name]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('DELETE CATEGORY ERROR:', err);
+    res.status(500).json({ message: 'Database error deleting category.' });
+  }
+});
+
+// Update User Status (Admin moderation for students/employers)
+app.put('/api/users/:id/status', async (req, res) => {
+  const { id } = req.params;
+  const { status, role } = req.body;
+  const tableName = role === 'Employer' ? 'employers' : 'students';
+
+  try {
+    const result = await pool.query(
+      `UPDATE ${tableName} SET status = $1 WHERE id = $2 RETURNING id, name, email, status;`,
+      [status, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('UPDATE USER STATUS ERROR:', err);
+    res.status(500).json({ message: 'Database error updating user status.' });
+  }
+});

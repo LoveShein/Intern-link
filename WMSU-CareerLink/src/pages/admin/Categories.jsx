@@ -1,18 +1,52 @@
-
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
 import Button from '../../components/Button.jsx';
 
 export default function Categories() {
-  const [categories, setCategories] = useState([
-    'Computer Science',
-    'Information Technology',
-    'Information Systems',
-    'Business Administration',
-    'Engineering',
-  ]);
-
+  const [categories, setCategories] = useState([]);
   const [value, setValue] = useState('');
+
+  useEffect(() => {
+    fetch('http://localhost:5001/api/categories')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setCategories(data);
+      })
+      .catch((err) => console.error('Error fetching categories:', err));
+  }, []);
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    if (!value.trim()) return;
+
+    try {
+      const res = await fetch('http://localhost:5001/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: value.trim() }),
+      });
+      if (res.ok) {
+        if (!categories.includes(value.trim())) {
+          setCategories([...categories, value.trim()]);
+        }
+        setValue('');
+      }
+    } catch (err) {
+      console.error('Error adding category:', err);
+    }
+  };
+
+  const handleRemove = async (c) => {
+    try {
+      const res = await fetch(`http://localhost:5001/api/categories/${encodeURIComponent(c)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setCategories(categories.filter((x) => x !== c));
+      }
+    } catch (err) {
+      console.error('Error deleting category:', err);
+    }
+  };
 
   return (
     <>
@@ -20,25 +54,14 @@ export default function Categories() {
         <div>
           <h1>Categories & courses</h1>
           <p>
-            Manage the sample course categories used by opportunity filters.
+            Manage the course categories used by opportunity filters.
           </p>
         </div>
       </div>
 
       <form
         className="panel inline-add"
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          if (
-            value.trim() &&
-            !categories.includes(value.trim())
-          ) {
-            setCategories([...categories, value.trim()]);
-          }
-
-          setValue('');
-        }}
+        onSubmit={handleAdd}
       >
         <label className="field-label">
           Add course or category
@@ -67,17 +90,18 @@ export default function Categories() {
             <strong>{c}</strong>
 
             <button
+              type="button"
               className="text-btn danger-text"
-              onClick={() =>
-                setCategories(
-                  categories.filter((x) => x !== c)
-                )
-              }
+              onClick={() => handleRemove(c)}
             >
               Remove
             </button>
           </div>
         ))}
+
+        {!categories.length && (
+          <div className="empty-state">No categories found.</div>
+        )}
       </section>
     </>
   );
