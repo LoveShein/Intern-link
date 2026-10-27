@@ -94,39 +94,10 @@ export default function Announcements() {
         )}
       </section>
 
-<<<<<<< HEAD
-      {open && (
-  <Modal
-    title="New announcement"
-    onClose={() => setOpen(false)}
-  >
-        <form
-          className="modal-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-
-            setItems([
-              {
-                id: Date.now(),
-                title,
-                message,
-                date: new Date()
-                  .toISOString()
-                  .slice(0, 10),
-              },
-              ...items,
-            ]);
-
-            setTitle('');
-            setMessage('');
-            setOpen(false);
-          }}
-=======
       {isOpen && (
         <Modal
           title="New announcement"
           onClose={() => setIsOpen(false)}
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
         >
           <form
             className="modal-form"
@@ -162,15 +133,6 @@ export default function Announcements() {
                 Cancel
               </Button>
 
-<<<<<<< HEAD
-            <Button type="submit">
-              Publish announcement
-            </Button>
-          </div>
-        </form>
-        </Modal>
-)}
-=======
               <Button type="submit">
                 Publish announcement
               </Button>
@@ -178,7 +140,6 @@ export default function Announcements() {
           </form>
         </Modal>
       )}
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
     </>
   );
 }

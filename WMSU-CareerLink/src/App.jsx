@@ -49,7 +49,7 @@ const load = (key, fallback) => {
 };
 
 export default function App() {
-
+  // Authentication and navigation
   const [user, setUser] = useState(() =>
     load('careerlink.user', null)
   );
@@ -102,6 +102,7 @@ export default function App() {
           localStorage.setItem(key, JSON.stringify(value));
         }
       } catch {
+        // Continue if browser storage is unavailable.
       }
     });
   }, [user, jobs, users, applications, saved, notifications]);
@@ -340,6 +341,7 @@ export default function App() {
 
   let content;
 
+  // Student portal
   if (role === 'Student') {
     switch (page) {
       case 'profile':
@@ -413,6 +415,7 @@ export default function App() {
     }
   }
 
+  // Employer portal
   if (role === 'Employer') {
     switch (page) {
       case 'company':
@@ -469,6 +472,7 @@ export default function App() {
     }
   }
 
+  // Administrator portal
   if (role === 'Admin') {
     switch (page) {
       case 'users':
@@ -575,7 +579,10 @@ export default function App() {
 
           <footer className="footer">
             <span>
-              © 2026 WMSU CareerLink 
+              © 2026 WMSU CareerLink · Student project prototype
+            </span>
+            <span>
+              Western Mindanao State University-inspired design
             </span>
           </footer>
         </main>
@@ -805,6 +812,9 @@ function ApplicationsAdmin({ applications, onStatus }) {
   );
 }
 
+ // --------------------------------------------------
+ // API REQUESTS
+ // --------------------------------------------------
 
  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 

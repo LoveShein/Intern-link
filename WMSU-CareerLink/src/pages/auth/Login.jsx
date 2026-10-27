@@ -250,7 +250,7 @@ export default function Login({
               type="button"
               onClick={onRegister}
             >
-              Create new account
+              Create student account
             </button>
           </div>
 

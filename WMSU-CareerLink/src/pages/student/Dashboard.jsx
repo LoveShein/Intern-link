@@ -30,7 +30,7 @@ export default function Dashboard({
           </span>
 
           <h1>
-            Good day, {user.name.split(' ')[0]} 
+            Good day, {user.name.split(' ')[0]} 👋
           </h1>
 
           <p className="muted">
@@ -144,7 +144,7 @@ export default function Dashboard({
         <section className="panel">
           <div className="section-heading">
             <div>
-              <h2>Application History</h2>
+              <h2>Application activity</h2>
               <p>Your latest submissions</p>
             </div>
 

@@ -254,9 +254,7 @@ export default function JobPostings({
               <textarea
                 rows="2"
                 value={form.requirements}
-                onChange={(e) =>
-                  setForm({ ...form, requirements: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, requirements: e.target.value })}
               />
             </label>
 
