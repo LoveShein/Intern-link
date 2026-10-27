@@ -70,3 +70,14 @@ CREATE TABLE IF NOT EXISTS applications (
 INSERT INTO admins (id, name, email, password, status)
 VALUES ('admin-1', 'WMSU Administrator', 'admin@wmsu.edu.ph', 'admin123', 'Active')
 ON CONFLICT (email) DO NOTHING;
+
+
+
+
+
+--student dashboard--
+
+ALTER TABLE students ADD COLUMN IF NOT EXISTS course VARCHAR(255) DEFAULT 'BS Computer Science';
+ALTER TABLE students ADD COLUMN IF NOT EXISTS year VARCHAR(50) DEFAULT '2nd Year';
+ALTER TABLE students ADD COLUMN IF NOT EXISTS skills TEXT DEFAULT 'HTML, CSS, JavaScript, React';
+ALTER TABLE students ADD COLUMN IF NOT EXISTS bio TEXT DEFAULT 'Computer Science student eager to learn through hands-on internship experience.';

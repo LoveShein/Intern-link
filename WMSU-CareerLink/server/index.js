@@ -130,6 +130,37 @@ app.post('/api/applications', async (req, res) => {
   }
 });
 
+// Update Student Profile API
+app.put('/api/students/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, email, course, year, skills, bio } = req.body;
+
+  try {
+    const query = `
+      UPDATE students 
+      SET name = COALESCE($1, name),
+          email = COALESCE($2, email),
+          course = COALESCE($3, course),
+          year = COALESCE($4, year),
+          skills = COALESCE($5, skills),
+          bio = COALESCE($6, bio)
+      WHERE id = $7
+      RETURNING id, name, email, course, year, skills, bio, status, created_at;
+    `;
+    const values = [name, email, course, year, skills, bio, id];
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Student not found.' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('UPDATE STUDENT ERROR:', err);
+    res.status(500).json({ message: 'Database error updating profile.' });
+  }
+});
+
 // ==========================================
 // AUTHENTICATION APIs (Separated Tables)
 // ==========================================
