@@ -13,7 +13,6 @@ export default function Login({
   onRegister,
   onForgot,
 }) {
-  const [role, setRole] = useState('Student');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
@@ -29,11 +28,19 @@ export default function Login({
     }
 
     setError('');
-    onLogin({
-      email,
-      password,
-      role,
-    });
+    setLoading(true);
+
+    try {
+      await onLogin({
+        email,
+        password,
+        role: 'Student',
+      });
+    } catch (err) {
+      setError(err.message || 'Login failed.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -51,7 +58,7 @@ export default function Login({
 
           <div>
             <strong>WMSU CareerLink</strong>
-            <span>CAREER AND INTERNSHIP PORTAL</span>
+            <span>STUDENT PORTAL LOGIN</span>
           </div>
         </div>
 
@@ -108,17 +115,17 @@ export default function Login({
         <div className="wmsu-login-card">
           <div className="wmsu-card-heading">
             <div className="wmsu-card-icon">
-              <BriefcaseBusiness size={24} />
+              <GraduationCap size={24} />
             </div>
 
             <span className="wmsu-card-eyebrow">
-              WELCOME TO CAREERLINK
+              STUDENT PORTAL
             </span>
 
             <h2>Sign in to your account</h2>
 
             <p>
-              Enter your details to access your portal.
+              Enter your credentials to access student features.
             </p>
           </div>
 
@@ -126,20 +133,6 @@ export default function Login({
             className="wmsu-login-form"
             onSubmit={submit}
           >
-            <label className="wmsu-field">
-              Portal role
-
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="wmsu-input"
-              >
-                <option>Student</option>
-                <option>Employer</option>
-                <option>Admin</option>
-              </select>
-            </label>
-
             <label className="wmsu-field">
               Email address
 
@@ -204,7 +197,7 @@ export default function Login({
               className="wmsu-login-submit"
               disabled={loading}
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? 'Signing in...' : 'Sign in as Student'}
               <ArrowRight size={18} />
             </button>
           </form>
@@ -216,7 +209,7 @@ export default function Login({
               type="button"
               onClick={onRegister}
             >
-              Create an account
+              Create student account
             </button>
           </div>
 
@@ -224,7 +217,7 @@ export default function Login({
             <ShieldCheck size={18} />
 
             <p>
-              <strong>Security Notice</strong>
+              <strong>Student Access Only</strong>
               <br />
               Connected to WMSU CareerLink Express API server.
             </p>

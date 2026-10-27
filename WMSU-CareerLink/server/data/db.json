@@ -55,6 +55,22 @@
   ],
   "users": [
     {
+      "id": 1793078660338,
+      "name": "muammar123",
+      "email": "muammar@gmail.com",
+      "password": "123456",
+      "role": "Student",
+      "status": "Active"
+    },
+    {
+      "id": 1793078610241,
+      "name": "muammar",
+      "email": "ae202403130@wmsu.edu.ph",
+      "password": "123456",
+      "role": "Student",
+      "status": "Active"
+    },
+    {
       "id": 1793021947514,
       "name": "jozane",
       "email": "novie12@gmail.com",

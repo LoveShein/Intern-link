@@ -13,7 +13,7 @@ export default function ForgotPassword({ onBack }) {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/forgot-password', {
+      const res = await fetch('http://localhost:5001/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -54,7 +54,7 @@ export default function ForgotPassword({ onBack }) {
         <h2>Forgot your password?</h2>
 
         <p className="muted">
-          Enter your email to receive password-reset instructions.
+          Enter your student email to receive password-reset instructions.
         </p>
 
         <label className="field-label">
@@ -64,6 +64,7 @@ export default function ForgotPassword({ onBack }) {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="student@example.com"
           />
         </label>
 

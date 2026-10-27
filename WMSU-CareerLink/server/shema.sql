@@ -1,0 +1,72 @@
+-- 1. STUDENTS TABLE
+CREATE TABLE IF NOT EXISTS students (
+  id VARCHAR(100) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  status VARCHAR(50) DEFAULT 'Active',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. EMPLOYERS TABLE
+CREATE TABLE IF NOT EXISTS employers (
+  id VARCHAR(100) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  status VARCHAR(50) DEFAULT 'Pending',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. ADMINS TABLE
+CREATE TABLE IF NOT EXISTS admins (
+  id VARCHAR(100) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  status VARCHAR(50) DEFAULT 'Active',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4. PASSWORD RESETS TABLE (For Forgot Password feature)
+CREATE TABLE IF NOT EXISTS password_resets (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  token VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 5. JOBS TABLE
+CREATE TABLE IF NOT EXISTS jobs (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  company VARCHAR(255) NOT NULL,
+  location VARCHAR(255) DEFAULT 'Zamboanga City',
+  type VARCHAR(50) DEFAULT 'Internship',
+  course VARCHAR(100) DEFAULT 'All Courses',
+  slots INT DEFAULT 1,
+  description TEXT,
+  requirements TEXT,
+  deadline DATE,
+  status VARCHAR(50) DEFAULT 'Published',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 6. APPLICATIONS TABLE
+CREATE TABLE IF NOT EXISTS applications (
+  id BIGINT PRIMARY KEY,
+  student VARCHAR(255) NOT NULL,
+  job_id INT NOT NULL,
+  job_title VARCHAR(255),
+  company VARCHAR(255),
+  date DATE,
+  status VARCHAR(50) DEFAULT 'Submitted',
+  note TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_job FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE
+);
+
+-- Seed Default Admin User into the admins table
+INSERT INTO admins (id, name, email, password, status)
+VALUES ('admin-1', 'WMSU Administrator', 'admin@wmsu.edu.ph', 'admin123', 'Active')
+ON CONFLICT (email) DO NOTHING;

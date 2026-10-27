@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Button from '../../components/Button.jsx';
 
 export default function Register({ onBack, onRegister }) {
-  const [role, setRole] = useState('Student');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +23,20 @@ export default function Register({ onBack, onRegister }) {
       return;
     }
 
-    onRegister({ name, email, password, role });
+    setLoading(true);
+
+    try {
+      await onRegister({
+        name,
+        email,
+        password,
+        role: 'Student',
+      });
+    } catch (err) {
+      setError(err.message || 'Account creation failed.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -40,29 +52,19 @@ export default function Register({ onBack, onRegister }) {
 
         <span className="eyebrow red">JOIN CAREERLINK</span>
 
-        <h2>Create your account</h2>
+        <h2>Create student account</h2>
 
         <p className="muted">
-          Register for your WMSU CareerLink account.
+          Register for your WMSU CareerLink student portal.
         </p>
 
         <label className="field-label">
-          I am registering as
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="Student">Student</option>
-            <option value="Employer">Employer</option>
-          </select>
-        </label>
-
-        <label className="field-label">
-          Full name / company name
+          Full name
           <input
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
+            placeholder="John Doe"
           />
         </label>
 
@@ -73,6 +75,7 @@ export default function Register({ onBack, onRegister }) {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
           />
         </label>
 
@@ -84,6 +87,7 @@ export default function Register({ onBack, onRegister }) {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="At least 4 chars"
             />
           </label>
 
@@ -94,6 +98,7 @@ export default function Register({ onBack, onRegister }) {
               type="password"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
+              placeholder="Confirm password"
             />
           </label>
         </div>
