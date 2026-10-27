@@ -1,11 +1,24 @@
-
 import { useState } from 'react';
-
 import SearchBar from '../../components/SearchBar.jsx';
 import Button from '../../components/Button.jsx';
 
 export default function Employers({ users, onStatus }) {
   const [query, setQuery] = useState('');
+
+  const handleReview = async (id, status) => {
+    try {
+      const res = await fetch(`http://localhost:5001/api/users/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, role: 'Employer' }),
+      });
+      if (res.ok) {
+        onStatus(id, status);
+      }
+    } catch (err) {
+      console.error('Error updating employer status:', err);
+    }
+  };
 
   const list = users.filter(
     (u) =>
@@ -66,14 +79,14 @@ export default function Employers({ users, onStatus }) {
                     <div className="table-actions">
                       <Button
                         variant="light"
-                        onClick={() => onStatus(u.id, 'Active')}
+                        onClick={() => handleReview(u.id, 'Active')}
                       >
                         Approve
                       </Button>
 
                       <Button
                         variant="danger"
-                        onClick={() => onStatus(u.id, 'Rejected')}
+                        onClick={() => handleReview(u.id, 'Rejected')}
                       >
                         Reject
                       </Button>

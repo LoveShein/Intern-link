@@ -1,7 +1,22 @@
-
 import Button from '../../components/Button.jsx';
 
 export default function JobApprovals({ jobs, onUpdate }) {
+  const handleJobStatus = async (j, newStatus) => {
+    try {
+      const res = await fetch(`http://localhost:5001/api/jobs/${j.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...j, status: newStatus }),
+      });
+      const updated = await res.json();
+      if (res.ok) {
+        onUpdate(updated);
+      }
+    } catch (err) {
+      console.error('Error updating job approval:', err);
+    }
+  };
+
   const pending = jobs.filter(
     (j) => j.status === 'Pending'
   );
@@ -43,24 +58,14 @@ export default function JobApprovals({ jobs, onUpdate }) {
 
             <div className="approval-actions">
               <Button
-                onClick={() =>
-                  onUpdate({
-                    ...j,
-                    status: 'Published',
-                  })
-                }
+                onClick={() => handleJobStatus(j, 'Published')}
               >
                 Approve
               </Button>
 
               <Button
                 variant="danger"
-                onClick={() =>
-                  onUpdate({
-                    ...j,
-                    status: 'Rejected',
-                  })
-                }
+                onClick={() => handleJobStatus(j, 'Rejected')}
               >
                 Reject
               </Button>

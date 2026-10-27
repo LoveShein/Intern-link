@@ -1,40 +1,64 @@
-
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
 import Button from '../../components/Button.jsx';
 import Modal from '../../components/Modal.jsx';
 
 export default function Announcements() {
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      title: 'Internship application season is open',
-      message:
-        'Students can browse current opportunities and prepare their profiles.',
-      date: '2026-10-01',
-    },
-    {
-      id: 2,
-      title: 'Employer orientation',
-      message:
-        'Partner employers are encouraged to review their posting details.',
-      date: '2026-10-05',
-    },
-  ]);
-
-  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    fetch('http://localhost:5001/api/announcements')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setItems(data);
+      })
+      .catch((err) => console.error('Error fetching announcements:', err));
+  }, []);
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:5001/api/announcements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, message }),
+      });
+      const newItem = await res.json();
+      if (res.ok) {
+        setItems([newItem, ...items]);
+        setTitle('');
+        setMessage('');
+        setIsOpen(false);
+      }
+    } catch (err) {
+      console.error('Error creating announcement:', err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5001/api/announcements/${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setItems(items.filter((x) => x.id !== id));
+      }
+    } catch (err) {
+      console.error('Error deleting announcement:', err);
+    }
+  };
 
   return (
     <>
       <div className="page-title">
         <div>
           <h1>Announcements</h1>
-          <p>Create and manage demo announcements.</p>
+          <p>Create and manage system announcements.</p>
         </div>
 
-        <Button onClick={() => setOpen(true)}>
+        <Button onClick={() => setIsOpen(true)}>
           + New announcement
         </Button>
       </div>
@@ -47,7 +71,7 @@ export default function Announcements() {
           >
             <div>
               <span className="eyebrow red">
-                ANNOUNCEMENT · {item.date}
+                ANNOUNCEMENT · {item.date ? item.date.slice(0, 10) : ''}
               </span>
 
               <h2>{item.title}</h2>
@@ -56,11 +80,7 @@ export default function Announcements() {
 
             <Button
               variant="danger"
-              onClick={() =>
-                setItems(
-                  items.filter((x) => x.id !== item.id)
-                )
-              }
+              onClick={() => handleDelete(item.id)}
             >
               Delete
             </Button>
@@ -74,6 +94,7 @@ export default function Announcements() {
         )}
       </section>
 
+<<<<<<< HEAD
       {open && (
   <Modal
     title="New announcement"
@@ -100,37 +121,48 @@ export default function Announcements() {
             setMessage('');
             setOpen(false);
           }}
+=======
+      {isOpen && (
+        <Modal
+          title="New announcement"
+          onClose={() => setIsOpen(false)}
+>>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
         >
-          <label className="field-label">
-            Title
-            <input
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </label>
+          <form
+            className="modal-form"
+            onSubmit={handleCreate}
+          >
+            <label className="field-label">
+              Title
+              <input
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </label>
 
-          <label className="field-label">
-            Message
-            <textarea
-              required
-              rows="4"
-              value={message}
-              onChange={(e) =>
-                setMessage(e.target.value)
-              }
-            />
-          </label>
+            <label className="field-label">
+              Message
+              <textarea
+                required
+                rows="4"
+                value={message}
+                onChange={(e) =>
+                  setMessage(e.target.value)
+                }
+              />
+            </label>
 
-          <div className="modal-actions">
-            <Button
-              variant="light"
-              type="button"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
+            <div className="modal-actions">
+              <Button
+                variant="light"
+                type="button"
+                onClick={() => setIsOpen(false)}
+              >
+                Cancel
+              </Button>
 
+<<<<<<< HEAD
             <Button type="submit">
               Publish announcement
             </Button>
@@ -138,6 +170,15 @@ export default function Announcements() {
         </form>
         </Modal>
 )}
+=======
+              <Button type="submit">
+                Publish announcement
+              </Button>
+            </div>
+          </form>
+        </Modal>
+      )}
+>>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
     </>
   );
 }

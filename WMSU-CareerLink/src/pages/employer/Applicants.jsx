@@ -1,10 +1,23 @@
-
 import { useState } from 'react';
-
 import SearchBar from '../../components/SearchBar.jsx';
 
 export default function Applicants({ applications, onStatus }) {
   const [query, setQuery] = useState('');
+
+  const handleStatusChange = async (id, status) => {
+    try {
+      const response = await fetch(`http://localhost:5001/api/applications/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      if (response.ok) {
+        onStatus(id, status);
+      }
+    } catch (err) {
+      console.error('Error updating application status:', err);
+    }
+  };
 
   const list = applications.filter((a) =>
     [a.student, a.jobTitle, a.company, a.status]
@@ -18,9 +31,7 @@ export default function Applicants({ applications, onStatus }) {
       <div className="page-title">
         <div>
           <h1>Applicants</h1>
-          <p>
-            Review demo applications and update their statuses.
-          </p>
+          <p>Review student applications and update their statuses.</p>
         </div>
       </div>
 
@@ -48,16 +59,12 @@ export default function Applicants({ applications, onStatus }) {
                 <tr key={a.id}>
                   <td>
                     <strong>{a.student}</strong>
-                    <small className="table-sub">
-                      Demo student
-                    </small>
+                    <small className="table-sub">Student applicant</small>
                   </td>
 
                   <td>
                     {a.jobTitle}
-                    <small className="table-sub">
-                      {a.company}
-                    </small>
+                    <small className="table-sub">{a.company}</small>
                   </td>
 
                   <td>{a.date}</td>
@@ -75,9 +82,7 @@ export default function Applicants({ applications, onStatus }) {
                   <td>
                     <select
                       value={a.status}
-                      onChange={(e) =>
-                        onStatus(a.id, e.target.value)
-                      }
+                      onChange={(e) => handleStatusChange(a.id, e.target.value)}
                     >
                       <option>Submitted</option>
                       <option>Under Review</option>
@@ -92,9 +97,7 @@ export default function Applicants({ applications, onStatus }) {
           </table>
 
           {!list.length && (
-            <div className="empty-state">
-              No applicants found.
-            </div>
+            <div className="empty-state">No applicants found.</div>
           )}
         </div>
       </section>

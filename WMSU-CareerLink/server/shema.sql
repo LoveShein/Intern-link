@@ -67,11 +67,36 @@ ON CONFLICT (email) DO NOTHING;
 
 
 
-
-
 --student dashboard--
 
 ALTER TABLE students ADD COLUMN IF NOT EXISTS course VARCHAR(255) DEFAULT 'BS Computer Science';
 ALTER TABLE students ADD COLUMN IF NOT EXISTS year VARCHAR(50) DEFAULT '2nd Year';
 ALTER TABLE students ADD COLUMN IF NOT EXISTS skills TEXT DEFAULT 'HTML, CSS, JavaScript, React';
 ALTER TABLE students ADD COLUMN IF NOT EXISTS bio TEXT DEFAULT 'Computer Science student eager to learn through hands-on internship experience.';
+
+--admin dashboard--
+
+-- 7. ANNOUNCEMENTS TABLE
+CREATE TABLE IF NOT EXISTS announcements (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  message TEXT NOT NULL,
+  date DATE DEFAULT CURRENT_DATE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 8. CATEGORIES TABLE
+CREATE TABLE IF NOT EXISTS categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert default categories matching sample data
+INSERT INTO categories (name) VALUES 
+  ('Computer Science'),
+  ('Information Technology'),
+  ('Information Systems'),
+  ('Business Administration'),
+  ('Engineering')
+ON CONFLICT (name) DO NOTHING;

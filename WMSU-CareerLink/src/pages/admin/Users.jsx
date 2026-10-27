@@ -1,11 +1,25 @@
-
 import { useState } from 'react';
-
 import SearchBar from '../../components/SearchBar.jsx';
 import Button from '../../components/Button.jsx';
 
 export default function UsersPage({ users, onStatus }) {
   const [query, setQuery] = useState('');
+
+  const handleUserStatus = async (u) => {
+    const nextStatus = u.status === 'Active' ? 'Inactive' : 'Active';
+    try {
+      const res = await fetch(`http://localhost:5001/api/users/${u.id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: nextStatus, role: u.role }),
+      });
+      if (res.ok) {
+        onStatus(u.id, nextStatus);
+      }
+    } catch (err) {
+      console.error('Error toggling user status:', err);
+    }
+  };
 
   const list = users.filter((u) =>
     [u.name, u.email, u.role, u.status]
@@ -20,7 +34,7 @@ export default function UsersPage({ users, onStatus }) {
         <div>
           <h1>User management</h1>
           <p>
-            View and activate or deactivate demo accounts.
+            View and activate or deactivate system accounts.
           </p>
         </div>
       </div>
@@ -65,14 +79,7 @@ export default function UsersPage({ users, onStatus }) {
                   <td>
                     <Button
                       variant="light"
-                      onClick={() =>
-                        onStatus(
-                          u.id,
-                          u.status === 'Active'
-                            ? 'Inactive'
-                            : 'Active'
-                        )
-                      }
+                      onClick={() => handleUserStatus(u)}
                     >
                       {u.status === 'Active'
                         ? 'Deactivate'
