@@ -150,7 +150,7 @@ export default function Dashboard({
 
             <button
               className="text-btn"
-              onClick={() => onNavigate('applications')}
+              onClick={() => onNavigate('Applications')}
             >
               See all
               <ArrowRight size={15} />

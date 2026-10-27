@@ -17,18 +17,19 @@ const __dirname = path.dirname(__filename);
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'wmsu_careerlink',
+  password: process.env.DB_PASSWORD || '123456',
+  database: process.env.DB_NAME || 'database',
   port: process.env.DB_PORT || 5432,
 });
 
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
-// Helper to determine which table to query based on role
+// Helper to determine which table to query based on role (case-insensitive)
 function getTableName(role) {
-  if (role === 'Employer') return 'employers';
-  if (role === 'Admin') return 'admins';
+  const normalizedRole = String(role || '').trim().toLowerCase();
+  if (normalizedRole === 'employer') return 'employers';
+  if (normalizedRole === 'admin') return 'admins';
   return 'students'; // default
 }
 
@@ -172,7 +173,7 @@ app.post('/api/auth/register', async (req, res) => {
   }
 
   // Admins cannot self-register here
-  if (targetRole === 'Admin') {
+  if (targetRole.toLowerCase() === 'admin') {
     return res.status(403).json({ message: 'Admin registration is restricted.' });
   }
 
@@ -187,7 +188,7 @@ app.post('/api/auth/register', async (req, res) => {
     }
 
     const id = (user.id || Date.now()).toString();
-    const status = targetRole === 'Employer' ? 'Pending' : 'Active';
+    const status = targetRole.toLowerCase() === 'employer' ? 'Pending' : 'Active';
 
     const insertQuery = `
       INSERT INTO ${tableName} (id, name, email, password, status)
@@ -219,7 +220,6 @@ app.post('/api/auth/forgot-password', async (req, res) => {
   try {
     const normalizedEmail = String(email).trim().toLowerCase();
     
-    // Check across all three tables for the email
     const studentCheck = await pool.query('SELECT email FROM students WHERE LOWER(email) = $1', [normalizedEmail]);
     const employerCheck = await pool.query('SELECT email FROM employers WHERE LOWER(email) = $1', [normalizedEmail]);
     const adminCheck = await pool.query('SELECT email FROM admins WHERE LOWER(email) = $1', [normalizedEmail]);
