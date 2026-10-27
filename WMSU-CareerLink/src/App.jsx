@@ -102,7 +102,6 @@ export default function App() {
           localStorage.setItem(key, JSON.stringify(value));
         }
       } catch {
-        // Continue if browser storage is unavailable.
       }
     });
   }, [user, jobs, users, applications, saved, notifications]);
