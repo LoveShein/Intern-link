@@ -49,7 +49,7 @@ const load = (key, fallback) => {
 };
 
 export default function App() {
-  // Authentication and navigation
+
   const [user, setUser] = useState(() =>
     load('careerlink.user', null)
   );
@@ -340,7 +340,6 @@ export default function App() {
 
   let content;
 
-  // Student portal
   if (role === 'Student') {
     switch (page) {
       case 'profile':
@@ -414,7 +413,6 @@ export default function App() {
     }
   }
 
-  // Employer portal
   if (role === 'Employer') {
     switch (page) {
       case 'company':
@@ -471,7 +469,6 @@ export default function App() {
     }
   }
 
-  // Administrator portal
   if (role === 'Admin') {
     switch (page) {
       case 'users':
@@ -808,9 +805,6 @@ function ApplicationsAdmin({ applications, onStatus }) {
   );
 }
 
- // --------------------------------------------------
- // API REQUESTS
- // --------------------------------------------------
 
  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
