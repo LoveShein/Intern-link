@@ -1,86 +1,65 @@
-import { useState } from 'react';
+import { FileCheck2 } from 'lucide-react';
 
-import Button from '../../components/Button.jsx';
-
-export default function Settings({ user, onSave, onLogout }) {
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [compact, setCompact] = useState(false);
-  const [saved, setSaved] = useState(false);
+export default function Applications({ applications, user }) {
+  const mine = applications.filter(
+    (a) => a.student === user.name
+  );
 
   return (
     <>
       <div className="page-title">
         <div>
-          <h1>Account settings</h1>
-          <p>Manage your demo account preferences.</p>
+          <h1>My Applications</h1>
+          <p>Track the status of your submitted internship and OJT applications.</p>
         </div>
+
+        <span className="count-pill">
+          {mine.length} applications
+        </span>
       </div>
 
-      <section className="panel form-panel">
-        <h2>Account details</h2>
+      <section className="panel">
+        <div className="table-wrap">
+          {mine.length > 0 ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>Opportunity</th>
+                  <th>Company</th>
+                  <th>Date Submitted</th>
+                  <th>Status</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSave({ ...user, name, email });
-            setSaved(true);
-          }}
-        >
-          <label className="field-label">
-            Display name
-            <input
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </label>
-
-          <label className="field-label">
-            Email address
-            <input
-              required
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-
-          <label className="check-label setting-check">
-            <input
-              type="checkbox"
-              checked={compact}
-              onChange={(e) => setCompact(e.target.checked)}
-            />
-            Use compact table density (demo preference)
-          </label>
-
-          {saved && (
-            <p className="success-note">
-              Settings saved for this demo session.
-            </p>
+              <tbody>
+                {mine.map((application) => (
+                  <tr key={application.id}>
+                    <td>
+                      <strong>{application.jobTitle}</strong>
+                    </td>
+                    <td>{application.company}</td>
+                    <td>{application.date}</td>
+                    <td>
+                      <span
+                        className={`status status-${application.status
+                          .toLowerCase()
+                          .replaceAll(' ', '-')}`}
+                      >
+                        {application.status}
+                      </span>
+                    </td>
+                    <td>{application.note || 'None'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="empty-state">
+              No applications submitted yet. Browse internships and OJT opportunities to get started.
+            </div>
           )}
-
-          <Button type="submit">
-            Save settings
-          </Button>
-        </form>
-
-        <hr />
-
-        <h2>Session</h2>
-
-        <p className="muted">
-          Signing out returns to the login screen. This is a
-          simulated local session.
-        </p>
-
-        <Button
-          variant="danger"
-          onClick={onLogout}
-        >
-          Log out
-        </Button>
+        </div>
       </section>
     </>
   );

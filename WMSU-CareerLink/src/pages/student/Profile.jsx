@@ -1,16 +1,14 @@
-
 import { useState } from 'react';
-
 import Button from '../../components/Button.jsx';
 
 export default function Profile({ user, onSave }) {
   const [form, setForm] = useState({
-    name: user.name,
-    email: user.email,
-    course: 'BS Computer Science',
-    year: '2nd Year',
-    skills: 'HTML, CSS, JavaScript, React',
-    bio: 'Computer Science student eager to learn through hands-on internship experience.',
+    name: user.name || '',
+    email: user.email || '',
+    course: user.course || 'BS Computer Science',
+    year: user.year || '2nd Year',
+    skills: user.skills || 'HTML, CSS, JavaScript, React',
+    bio: user.bio || 'Computer Science student eager to learn through hands-on internship experience.',
   });
 
   const [resume, setResume] = useState('No résumé selected');
@@ -36,6 +34,7 @@ export default function Profile({ user, onSave }) {
           e.preventDefault();
           onSave({ ...user, ...form });
           setSaved(true);
+          setTimeout(() => setSaved(false), 3000);
         }}
       >
         <h2>Personal information</h2>
@@ -119,7 +118,7 @@ export default function Profile({ user, onSave }) {
 
         {saved && (
           <p className="success-note">
-            Profile updated in this demo session.
+            Profile updated successfully.
           </p>
         )}
 
