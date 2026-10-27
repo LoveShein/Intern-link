@@ -6,6 +6,7 @@ export default function Register({ onBack, onRegister }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [role, setRole] = useState('Student');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +31,7 @@ export default function Register({ onBack, onRegister }) {
         name,
         email,
         password,
-        role: 'Student',
+        role,
       });
     } catch (err) {
       setError(err.message || 'Account creation failed.');
@@ -52,19 +53,44 @@ export default function Register({ onBack, onRegister }) {
 
         <span className="eyebrow red">JOIN CAREERLINK</span>
 
-        <h2>Create student account</h2>
+        <h2>Create an account</h2>
 
         <p className="muted">
-          Register for your WMSU CareerLink student portal.
+          Register for your WMSU CareerLink portal account.
         </p>
 
         <label className="field-label">
-          Full name
+          I am registering as a:
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '5px' }}>
+            {['Student', 'Employer'].map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setRole(r)}
+                style={{
+                  padding: '10px',
+                  borderRadius: '8px',
+                  border: role === r ? '1px solid var(--red)' : '1px solid #dfe2e9',
+                  background: role === r ? 'var(--red-soft)' : 'white',
+                  color: role === r ? 'var(--red)' : '#626a78',
+                  fontSize: '0.8rem',
+                  fontWeight: '700',
+                  cursor: 'pointer'
+                }}
+              >
+                {r === 'Employer' ? 'Company / Employer' : 'Student'}
+              </button>
+            ))}
+          </div>
+        </label>
+
+        <label className="field-label">
+          {role === 'Employer' ? 'Company Name / Representative' : 'Full name'}
           <input
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="John Doe"
+            placeholder={role === 'Employer' ? 'Tech Solutions Inc.' : 'John Doe'}
           />
         </label>
 
@@ -112,7 +138,7 @@ export default function Register({ onBack, onRegister }) {
           className="full-width"
           disabled={loading}
         >
-          {loading ? 'Creating account...' : 'Create account'}
+          {loading ? 'Creating account...' : `Create ${role.toLowerCase()} account`}
         </Button>
       </form>
     </main>

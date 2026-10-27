@@ -7,6 +7,7 @@ import {
   EyeOff,
   GraduationCap,
   ShieldCheck,
+  Building2,
 } from 'lucide-react';
 
 export default function Login({
@@ -16,6 +17,7 @@ export default function Login({
 }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('Student');
   const [show, setShow] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,7 +37,7 @@ export default function Login({
       await onLogin({
         email,
         password,
-        role: 'Student',
+        role,
       });
     } catch (err) {
       setError(err.message || 'Login failed.');
@@ -59,7 +61,7 @@ export default function Login({
 
           <div>
             <strong>WMSU CareerLink</strong>
-            <span>STUDENT PORTAL LOGIN</span>
+            <span>PORTAL LOGIN</span>
           </div>
         </div>
 
@@ -71,7 +73,6 @@ export default function Login({
 
       <section className="wmsu-login-main">
         <div className="wmsu-welcome">
-
           <h1>
             One Click
             <br />
@@ -114,17 +115,23 @@ export default function Login({
         <div className="wmsu-login-card">
           <div className="wmsu-card-heading">
             <div className="wmsu-card-icon">
-              <GraduationCap size={24} />
+              {role === 'Admin' ? (
+                <ShieldCheck size={24} />
+              ) : role === 'Employer' ? (
+                <Building2 size={24} />
+              ) : (
+                <GraduationCap size={24} />
+              )}
             </div>
 
             <span className="wmsu-card-eyebrow">
-              STUDENT PORTAL
+              {role.toUpperCase()} PORTAL
             </span>
 
             <h2>Sign in to your account</h2>
 
             <p>
-              Enter your credentials to access student features.
+              Select your role and enter your credentials.
             </p>
           </div>
 
@@ -132,6 +139,41 @@ export default function Login({
             className="wmsu-login-form"
             onSubmit={submit}
           >
+            {/* Role Selection Tabs */}
+            <label className="wmsu-field">
+              Portal Access Role
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
+                {['Student', 'Employer', 'Admin'].map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => {
+                      setRole(r);
+                      if (r === 'Admin') {
+                        setEmail('admin123@wmsu.edu.ph');
+                        setPassword('admin123');
+                      } else {
+                        setEmail('');
+                        setPassword('');
+                      }
+                    }}
+                    style={{
+                      padding: '8px 4px',
+                      borderRadius: '7px',
+                      border: role === r ? '1px solid #ae2c41' : '1px solid #e0e5ed',
+                      background: role === r ? '#f9e9ed' : '#f9fafc',
+                      color: role === r ? '#ae2c41' : '#656d7b',
+                      fontSize: '11px',
+                      fontWeight: '700',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+            </label>
+
             <label className="wmsu-field">
               Email address
 
@@ -196,7 +238,7 @@ export default function Login({
               className="wmsu-login-submit"
               disabled={loading}
             >
-              {loading ? 'Signing in...' : 'Sign in as Student'}
+              {loading ? 'Signing in...' : `Sign in as ${role}`}
               <ArrowRight size={18} />
             </button>
           </form>
@@ -217,7 +259,7 @@ export default function Login({
 
       <footer className="wmsu-login-footer">
         <span>WMSU CAREERLINK</span>
-        <span> © 2026 CareerLink Student Job Internship Portal</span>
+        <span> © 2026 CareerLink Job & Internship Portal</span>
       </footer>
     </main>
   );
