@@ -1,11 +1,5 @@
-
 import { useState } from 'react';
-
-import {
-  Plus,
-  Pencil,
-  Trash2,
-} from 'lucide-react';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 
 import Button from '../../components/Button.jsx';
 import Modal from '../../components/Modal.jsx';
@@ -35,27 +29,64 @@ export default function JobPostings({
   const [form, setForm] = useState(blank);
   const [confirm, setConfirm] = useState(null);
 
-  const open = (job) => {
+  const openEdit = (job) => {
+    setConfirm(null); // Ensure delete modal is closed
     setEditing(job?.id ?? 'new');
     setForm(job ? { ...job } : blank);
   };
 
-  const submit = (e) => {
+  const openDelete = (job) => {
+    setEditing(null); // Ensure edit modal is closed
+    setConfirm(job);
+  };
+
+  const submit = async (e) => {
     e.preventDefault();
 
     if (editing === 'new') {
-      onAdd({
-        ...form,
-        id: Date.now(),
-      });
+      try {
+        const response = await fetch('http://localhost:5001/api/jobs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        });
+        const newJob = await response.json();
+        if (response.ok) {
+          onAdd(newJob);
+        }
+      } catch (err) {
+        console.error('Error creating job:', err);
+      }
     } else {
-      onUpdate({
-        ...form,
-        id: editing,
-      });
+      try {
+        const response = await fetch(`http://localhost:5001/api/jobs/${editing}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        });
+        const updatedJob = await response.json();
+        if (response.ok) {
+          onUpdate(updatedJob);
+        }
+      } catch (err) {
+        console.error('Error updating job:', err);
+      }
     }
 
     setEditing(null);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5001/api/jobs/${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        onDelete(id);
+      }
+    } catch (err) {
+      console.error('Error deleting job:', err);
+    }
   };
 
   const filtered = jobs.filter((j) =>
@@ -70,12 +101,10 @@ export default function JobPostings({
       <div className="page-title">
         <div>
           <h1>Job postings</h1>
-          <p>
-            Create and manage internship opportunities.
-          </p>
+          <p>Create and manage internship opportunities.</p>
         </div>
 
-        <Button onClick={() => open(null)}>
+        <Button onClick={() => openEdit(null)}>
           <Plus size={17} />
           Add posting
         </Button>
@@ -105,18 +134,14 @@ export default function JobPostings({
                 <tr key={j.id}>
                   <td>
                     <strong>{j.title}</strong>
-                    <small className="table-sub">
-                      {j.company}
-                    </small>
+                    <small className="table-sub">{j.company}</small>
                   </td>
 
                   <td>{j.type}</td>
                   <td>{j.deadline}</td>
 
                   <td>
-                    <span
-                      className={`status status-${j.status.toLowerCase()}`}
-                    >
+                    <span className={`status status-${j.status.toLowerCase()}`}>
                       {j.status}
                     </span>
                   </td>
@@ -126,7 +151,7 @@ export default function JobPostings({
                       <button
                         className="icon-btn"
                         title="Edit"
-                        onClick={() => open(j)}
+                        onClick={() => openEdit(j)}
                       >
                         <Pencil size={16} />
                       </button>
@@ -134,7 +159,7 @@ export default function JobPostings({
                       <button
                         className="icon-btn danger"
                         title="Delete"
-                        onClick={() => setConfirm(j)}
+                        onClick={() => openDelete(j)}
                       >
                         <Trash2 size={16} />
                       </button>
@@ -146,185 +171,129 @@ export default function JobPostings({
           </table>
 
           {!filtered.length && (
-            <div className="empty-state">
-              No postings match your search.
-            </div>
+            <div className="empty-state">No postings match your search.</div>
           )}
         </div>
       </section>
 
-      <Modal
-        title={
-          editing === 'new'
-            ? 'Create posting'
-            : 'Edit posting'
-        }
-        onClose={() => setEditing(null)}
-      >
-        <form
-          className="modal-form"
-          onSubmit={submit}
+      {/* Edit / Create Modal (Only rendered when editing is not null) */}
+      {editing !== null && (
+        <Modal
+          title={editing === 'new' ? 'Create posting' : 'Edit posting'}
+          onClose={() => setEditing(null)}
         >
-          <label className="field-label">
-            Job title
-            <input
-              required
-              value={form.title}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  title: e.target.value,
-                })
-              }
-            />
-          </label>
-
-          <div className="two-fields">
+          <form className="modal-form" onSubmit={submit}>
             <label className="field-label">
-              Location
+              Job title
               <input
                 required
-                value={form.location}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    location: e.target.value,
-                  })
-                }
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+              />
+            </label>
+
+            <div className="two-fields">
+              <label className="field-label">
+                Location
+                <input
+                  required
+                  value={form.location}
+                  onChange={(e) => setForm({ ...form, location: e.target.value })}
+                />
+              </label>
+
+              <label className="field-label">
+                Course
+                <select
+                  value={form.course}
+                  onChange={(e) => setForm({ ...form, course: e.target.value })}
+                >
+                  <option>Computer Science</option>
+                  <option>Information Technology</option>
+                  <option>Information Systems</option>
+                  <option>Any related course</option>
+                </select>
+              </label>
+            </div>
+
+            <div className="two-fields">
+              <label className="field-label">
+                Type
+                <select
+                  value={form.type}
+                  onChange={(e) => setForm({ ...form, type: e.target.value })}
+                >
+                  <option>Internship</option>
+                  <option>OJT</option>
+                </select>
+              </label>
+
+              <label className="field-label">
+                Deadline
+                <input
+                  type="date"
+                  required
+                  value={form.deadline}
+                  onChange={(e) => setForm({ ...form, deadline: e.target.value })}
+                />
+              </label>
+            </div>
+
+            <label className="field-label">
+              Description
+              <textarea
+                required
+                rows="3"
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
               />
             </label>
 
             <label className="field-label">
-              Course
-              <select
-                value={form.course}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    course: e.target.value,
-                  })
-                }
-              >
-                <option>Computer Science</option>
-                <option>Information Technology</option>
-                <option>Information Systems</option>
-                <option>Any related course</option>
-              </select>
-            </label>
-          </div>
-
-          <div className="two-fields">
-            <label className="field-label">
-              Type
-              <select
-                value={form.type}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    type: e.target.value,
-                  })
-                }
-              >
-                <option>Internship</option>
-                <option>OJT</option>
-              </select>
-            </label>
-
-            <label className="field-label">
-              Deadline
-              <input
-                type="date"
-                required
-                value={form.deadline}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    deadline: e.target.value,
-                  })
-                }
+              Requirements
+              <textarea
+                rows="2"
+                value={form.requirements}
+                onChange={(e) => setForm({ ...form, requirements: e.target.value })}
               />
             </label>
+
+            <div className="modal-actions">
+              <Button type="button" variant="light" onClick={() => setEditing(null)}>
+                Cancel
+              </Button>
+              <Button type="submit">Save posting</Button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* Delete Confirmation Modal (Only rendered when confirm is not null) */}
+      {confirm !== null && (
+        <Modal title="Delete posting?" onClose={() => setConfirm(null)}>
+          <div className="modal-form">
+            <p>
+              Remove <strong>{confirm?.title}</strong> from this list?
+            </p>
+
+            <div className="modal-actions">
+              <Button variant="light" onClick={() => setConfirm(null)}>
+                Cancel
+              </Button>
+
+              <Button
+                variant="danger"
+                onClick={() => {
+                  handleDelete(confirm.id);
+                  setConfirm(null);
+                }}
+              >
+                Delete posting
+              </Button>
+            </div>
           </div>
-
-          <label className="field-label">
-            Description
-            <textarea
-              required
-              rows="3"
-              value={form.description}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  description: e.target.value,
-                })
-              }
-            />
-          </label>
-
-          <label className="field-label">
-            Requirements
-            <textarea
-              rows="2"
-              value={form.requirements}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  requirements: e.target.value,
-                })
-              }
-            />
-          </label>
-
-          <div className="modal-actions">
-            <Button
-              type="button"
-              variant="light"
-              onClick={() => setEditing(null)}
-            >
-              Cancel
-            </Button>
-
-            <Button type="submit">
-              Save posting
-            </Button>
-          </div>
-        </form>
-      </Modal>
-
-      <Modal
-        title="Delete posting?"
-        onClose={() => setConfirm(null)}
-      >
-        <div className="modal-form">
-          <p>
-            Remove <strong>{confirm?.title}</strong> from this
-            demo list?
-          </p>
-
-          <p className="muted">
-            This cannot be undone in the current browser session.
-          </p>
-
-          <div className="modal-actions">
-            <Button
-              variant="light"
-              onClick={() => setConfirm(null)}
-            >
-              Cancel
-            </Button>
-
-            <Button
-              variant="danger"
-              onClick={() => {
-                onDelete(confirm.id);
-                setConfirm(null);
-              }}
-            >
-              Delete posting
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        </Modal>
+      )}
     </>
   );
 }
