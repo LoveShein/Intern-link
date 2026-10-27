@@ -579,10 +579,7 @@ export default function App() {
 
           <footer className="footer">
             <span>
-              © 2026 WMSU CareerLink · Student project prototype
-            </span>
-            <span>
-              Western Mindanao State University-inspired design
+              © 2026 WMSU CareerLink 
             </span>
           </footer>
         </main>

@@ -86,7 +86,6 @@ app.post('/api/jobs', async (req, res) => {
   }
 });
 
-// Applications API
 app.get('/api/applications', async (_req, res) => {
   try {
     const result = await pool.query('SELECT * FROM applications ORDER BY id DESC');
@@ -129,9 +128,6 @@ app.post('/api/applications', async (req, res) => {
   }
 });
 
-// ==========================================
-// AUTHENTICATION APIs (Separated Tables)
-// ==========================================
 
 app.post('/api/auth/login', async (req, res) => {
   const { email, password, role } = req.body;
