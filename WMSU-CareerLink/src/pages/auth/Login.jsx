@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import logo from '../../assets/logo-wmsu.png';
 import {
   ArrowRight,
   BriefcaseBusiness,
@@ -51,7 +52,7 @@ export default function Login({
       <header className="wmsu-login-header">
         <div className="wmsu-header-brand">
           <img
-            src="wmsu-logo.png"
+            src={logo}
             alt="WMSU logo"
             className="wmsu-logo"
           />
@@ -70,22 +71,20 @@ export default function Login({
 
       <section className="wmsu-login-main">
         <div className="wmsu-welcome">
-          <span className="wmsu-welcome-badge">
-            YOUR CAREER JOURNEY BEGINS HERE
-          </span>
 
           <h1>
-            Your future
+            One Click
             <br />
-            deserves an
-            <br />
-            <span>opportunity.</span>
+            One 
+            <span> Opportunity.</span>
           </h1>
 
           <p>
-            Connect your education to real-world experience.
-            Explore internships, discover opportunities, and
-            take your next step with WMSU CareerLink.
+            Explore internships, discover opportunities,
+            <br />
+             and take your next step with
+             <br />
+              WMSU CareerLink.
           </p>
 
           <div className="wmsu-welcome-points">
@@ -213,21 +212,12 @@ export default function Login({
             </button>
           </div>
 
-          <div className="wmsu-demo-notice">
-            <ShieldCheck size={18} />
-
-            <p>
-              <strong>Student Access Only</strong>
-              <br />
-              Connected to WMSU CareerLink Express API server.
-            </p>
-          </div>
         </div>
       </section>
 
       <footer className="wmsu-login-footer">
         <span>WMSU CAREERLINK</span>
-        <span>Connecting students to opportunities.</span>
+        <span> © 2026 CareerLink Student Job Internship Portal</span>
       </footer>
     </main>
   );
