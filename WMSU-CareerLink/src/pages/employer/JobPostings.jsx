@@ -153,178 +153,160 @@ export default function JobPostings({
         </div>
       </section>
 
-      <Modal
-        title={
-          editing === 'new'
-            ? 'Create posting'
-            : 'Edit posting'
-        }
-        onClose={() => setEditing(null)}
-      >
-        <form
-          className="modal-form"
-          onSubmit={submit}
+      
+      {editing !== null && (
+        <Modal
+          title={
+            editing === 'new'
+              ? 'Create posting'
+              : 'Edit posting'
+          }
+          onClose={() => setEditing(null)}
         >
-          <label className="field-label">
-            Job title
-            <input
-              required
-              value={form.title}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  title: e.target.value,
-                })
-              }
-            />
-          </label>
-
-          <div className="two-fields">
+          <form className="modal-form" onSubmit={submit}>
             <label className="field-label">
-              Location
+              Job title
               <input
                 required
-                value={form.location}
+                value={form.title}
                 onChange={(e) =>
-                  setForm({
-                    ...form,
-                    location: e.target.value,
-                  })
+                  setForm({ ...form, title: e.target.value })
+                }
+              />
+            </label>
+
+            <div className="two-fields">
+              <label className="field-label">
+                Location
+                <input
+                  required
+                  value={form.location}
+                  onChange={(e) =>
+                    setForm({ ...form, location: e.target.value })
+                  }
+                />
+              </label>
+
+              <label className="field-label">
+                Course
+                <select
+                  value={form.course}
+                  onChange={(e) =>
+                    setForm({ ...form, course: e.target.value })
+                  }
+                >
+                  <option>Computer Science</option>
+                  <option>Information Technology</option>
+                  <option>Information Systems</option>
+                  <option>Any related course</option>
+                </select>
+              </label>
+            </div>
+
+            <div className="two-fields">
+              <label className="field-label">
+                Type
+                <select
+                  value={form.type}
+                  onChange={(e) =>
+                    setForm({ ...form, type: e.target.value })
+                  }
+                >
+                  <option>Internship</option>
+                  <option>OJT</option>
+                </select>
+              </label>
+
+              <label className="field-label">
+                Deadline
+                <input
+                  type="date"
+                  required
+                  value={form.deadline}
+                  onChange={(e) =>
+                    setForm({ ...form, deadline: e.target.value })
+                  }
+                />
+              </label>
+            </div>
+
+            <label className="field-label">
+              Description
+              <textarea
+                required
+                rows="3"
+                value={form.description}
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
                 }
               />
             </label>
 
             <label className="field-label">
-              Course
-              <select
-                value={form.course}
+              Requirements
+              <textarea
+                rows="2"
+                value={form.requirements}
                 onChange={(e) =>
-                  setForm({
-                    ...form,
-                    course: e.target.value,
-                  })
-                }
-              >
-                <option>Computer Science</option>
-                <option>Information Technology</option>
-                <option>Information Systems</option>
-                <option>Any related course</option>
-              </select>
-            </label>
-          </div>
-
-          <div className="two-fields">
-            <label className="field-label">
-              Type
-              <select
-                value={form.type}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    type: e.target.value,
-                  })
-                }
-              >
-                <option>Internship</option>
-                <option>OJT</option>
-              </select>
-            </label>
-
-            <label className="field-label">
-              Deadline
-              <input
-                type="date"
-                required
-                value={form.deadline}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    deadline: e.target.value,
-                  })
+                  setForm({ ...form, requirements: e.target.value })
                 }
               />
             </label>
+
+            <div className="modal-actions">
+              <Button
+                type="button"
+                variant="light"
+                onClick={() => setEditing(null)}
+              >
+                Cancel
+              </Button>
+
+              <Button type="submit">Save posting</Button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {confirm !== null && (
+        <Modal
+          title="Delete posting?"
+          onClose={() => setConfirm(null)}
+        >
+          <div className="modal-form">
+            <p>
+              Remove <strong>{confirm.title}</strong> from this
+              demo list?
+            </p>
+
+            <p className="muted">
+              This cannot be undone in the current browser session.
+            </p>
+
+            <div className="modal-actions">
+              <Button
+                type="button"
+                variant="light"
+                onClick={() => setConfirm(null)}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                type="button"
+                variant="danger"
+                onClick={() => {
+                  onDelete(confirm.id);
+                  setConfirm(null);
+                }}
+              >
+                Delete posting
+              </Button>
+            </div>
           </div>
+        </Modal>
+      )}
 
-          <label className="field-label">
-            Description
-            <textarea
-              required
-              rows="3"
-              value={form.description}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  description: e.target.value,
-                })
-              }
-            />
-          </label>
-
-          <label className="field-label">
-            Requirements
-            <textarea
-              rows="2"
-              value={form.requirements}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  requirements: e.target.value,
-                })
-              }
-            />
-          </label>
-
-          <div className="modal-actions">
-            <Button
-              type="button"
-              variant="light"
-              onClick={() => setEditing(null)}
-            >
-              Cancel
-            </Button>
-
-            <Button type="submit">
-              Save posting
-            </Button>
-          </div>
-        </form>
-      </Modal>
-
-      <Modal
-        title="Delete posting?"
-        onClose={() => setConfirm(null)}
-      >
-        <div className="modal-form">
-          <p>
-            Remove <strong>{confirm?.title}</strong> from this
-            demo list?
-          </p>
-
-          <p className="muted">
-            This cannot be undone in the current browser session.
-          </p>
-
-          <div className="modal-actions">
-            <Button
-              variant="light"
-              onClick={() => setConfirm(null)}
-            >
-              Cancel
-            </Button>
-
-            <Button
-              variant="danger"
-              onClick={() => {
-                onDelete(confirm.id);
-                setConfirm(null);
-              }}
-            >
-              Delete posting
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </>
   );
 }

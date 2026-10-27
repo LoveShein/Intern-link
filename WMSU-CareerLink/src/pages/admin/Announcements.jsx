@@ -74,10 +74,11 @@ export default function Announcements() {
         )}
       </section>
 
-      <Modal
-        title="New announcement"
-        onClose={() => setOpen(false)}
-      >
+      {open && (
+  <Modal
+    title="New announcement"
+    onClose={() => setOpen(false)}
+  >
         <form
           className="modal-form"
           onSubmit={(e) => {
@@ -135,7 +136,8 @@ export default function Announcements() {
             </Button>
           </div>
         </form>
-      </Modal>
+        </Modal>
+)}
     </>
   );
 }
