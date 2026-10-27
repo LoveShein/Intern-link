@@ -148,13 +148,13 @@ export default function Dashboard({
               <p>Your latest submissions</p>
             </div>
 
-            <button
-              className="text-btn"
-              onClick={() => onNavigate('Applications')}
+           <button
+           className="text-btn"
+           onClick={() => onNavigate('applications')}
             >
-              See all
-              <ArrowRight size={15} />
-            </button>
+             See all
+             <ArrowRight size={15} />
+          </button>
           </div>
 
           {mine.length ? (
