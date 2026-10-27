@@ -84,8 +84,6 @@ app.post('/api/jobs', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-=======
 app.put('/api/jobs/:id', async (req, res) => {
   const { id } = req.params;
   const payload = req.body;
@@ -142,7 +140,6 @@ app.delete('/api/jobs/:id', async (req, res) => {
 });
 
 // Applications API
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
 app.get('/api/applications', async (_req, res) => {
   try {
     const result = await pool.query('SELECT * FROM applications ORDER BY id DESC');

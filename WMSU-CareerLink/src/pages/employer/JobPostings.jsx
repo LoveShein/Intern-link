@@ -176,21 +176,10 @@ export default function JobPostings({
         </div>
       </section>
 
-<<<<<<< HEAD
-      
-      {editing !== null && (
-        <Modal
-          title={
-            editing === 'new'
-              ? 'Create posting'
-              : 'Edit posting'
-          }
-=======
       {/* Edit / Create Modal (Only rendered when editing is not null) */}
       {editing !== null && (
         <Modal
           title={editing === 'new' ? 'Create posting' : 'Edit posting'}
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
           onClose={() => setEditing(null)}
         >
           <form className="modal-form" onSubmit={submit}>
@@ -199,13 +188,7 @@ export default function JobPostings({
               <input
                 required
                 value={form.title}
-<<<<<<< HEAD
-                onChange={(e) =>
-                  setForm({ ...form, title: e.target.value })
-                }
-=======
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
               />
             </label>
 
@@ -215,13 +198,7 @@ export default function JobPostings({
                 <input
                   required
                   value={form.location}
-<<<<<<< HEAD
-                  onChange={(e) =>
-                    setForm({ ...form, location: e.target.value })
-                  }
-=======
                   onChange={(e) => setForm({ ...form, location: e.target.value })}
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
                 />
               </label>
 
@@ -229,13 +206,7 @@ export default function JobPostings({
                 Course
                 <select
                   value={form.course}
-<<<<<<< HEAD
-                  onChange={(e) =>
-                    setForm({ ...form, course: e.target.value })
-                  }
-=======
                   onChange={(e) => setForm({ ...form, course: e.target.value })}
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
                 >
                   <option>Computer Science</option>
                   <option>Information Technology</option>
@@ -250,13 +221,7 @@ export default function JobPostings({
                 Type
                 <select
                   value={form.type}
-<<<<<<< HEAD
-                  onChange={(e) =>
-                    setForm({ ...form, type: e.target.value })
-                  }
-=======
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
                 >
                   <option>Internship</option>
                   <option>OJT</option>
@@ -269,13 +234,7 @@ export default function JobPostings({
                   type="date"
                   required
                   value={form.deadline}
-<<<<<<< HEAD
-                  onChange={(e) =>
-                    setForm({ ...form, deadline: e.target.value })
-                  }
-=======
                   onChange={(e) => setForm({ ...form, deadline: e.target.value })}
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
                 />
               </label>
             </div>
@@ -286,13 +245,7 @@ export default function JobPostings({
                 required
                 rows="3"
                 value={form.description}
-<<<<<<< HEAD
-                onChange={(e) =>
-                  setForm({ ...form, description: e.target.value })
-                }
-=======
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
               />
             </label>
 
@@ -331,16 +284,9 @@ export default function JobPostings({
               </Button>
 
               <Button
-<<<<<<< HEAD
-                type="button"
-                variant="danger"
-                onClick={() => {
-                  onDelete(confirm.id);
-=======
                 variant="danger"
                 onClick={() => {
                   handleDelete(confirm.id);
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
                   setConfirm(null);
                 }}
               >
@@ -350,10 +296,6 @@ export default function JobPostings({
           </div>
         </Modal>
       )}
-<<<<<<< HEAD
-
-=======
->>>>>>> d13cc01bdd8f09c2f6532256528518fc01391f7c
     </>
   );
 }
